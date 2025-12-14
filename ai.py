@@ -1,5 +1,6 @@
 # ai.py
 import random
+import copy
 from settings import *
 
 class AI:
@@ -8,36 +9,31 @@ class AI:
 
     def get_best_move(self, board, p1, p2):
         """Root of the Minimax algorithm."""
-        # p1 is Human (Maximizer for heuristic perspective? No, usually AI maximizes its own score)
-        # Let's say: AI is Maximizer.
-        # AI wants to Minimize its distance and Maximize P1's distance.
-        # Score = P1_Dist - AI_Dist.
-        
-        # We need to clone players to not affect real game during recursion
-        # But players are simple objects, we can just create copies or update temp ones.
-        # Actually, simpler to pass player state data.
-        
-        print("AI Thinking...")
-        best_score = -float('inf')
-        best_move = None
-        
         # Determine who is the AI player object
         ai_player = p2 if self.id == 2 else p1
         opp_player = p1 if self.id == 2 else p2
 
+        # print("AI Thinking...") # Uncomment for debug
+        
+        # 1. Get valid moves from the current state
         possible_moves = self.get_all_moves(board, ai_player, opp_player)
+        
+        best_score = -float('inf')
+        best_move = None
         
         alpha = -float('inf')
         beta = float('inf')
 
         for move in possible_moves:
-            # Simulate
+            # 2. Create a simulation board for the recursive steps
             sim_board = board.clone()
             sim_ai = self.clone_player(ai_player)
             sim_opp = self.clone_player(opp_player)
             
+            # 3. Apply the move to the simulation
             self.apply_move(sim_board, sim_ai, sim_opp, move)
             
+            # 4. Call Minimax
             score = self.minimax(sim_board, AI_DEPTH - 1, alpha, beta, False, sim_ai, sim_opp)
             
             if score > best_score:
@@ -47,18 +43,26 @@ class AI:
             alpha = max(alpha, score)
             if beta <= alpha:
                 break
+        
+        # Fallback if no move found
+        if best_move is None and possible_moves:
+            best_move = random.choice(possible_moves)
                 
         return best_move
 
     def minimax(self, board, depth, alpha, beta, is_maximizing, ai_player, opp_player):
-        # 1. Base Case
+        # 1. Base Case: Check for winner or depth limit
         ai_dist = board.get_shortest_path_len(ai_player.pos, ai_player.goal_row)
         opp_dist = board.get_shortest_path_len(opp_player.pos, opp_player.goal_row)
 
-        if ai_dist == 0: return INF # AI Won
-        if opp_dist == 0: return -INF # Opponent Won
+        if ai_dist == -1: ai_dist = INF
+        if opp_dist == -1: opp_dist = INF
+
+        if ai_dist == 0: return INF 
+        if opp_dist == 0: return -INF 
+        
         if depth == 0:
-            return opp_dist - ai_dist # Heuristic
+            return opp_dist - ai_dist
 
         if is_maximizing:
             max_eval = -float('inf')
@@ -67,6 +71,7 @@ class AI:
                 sim_board = board.clone()
                 sim_ai = self.clone_player(ai_player)
                 sim_opp = self.clone_player(opp_player)
+                
                 self.apply_move(sim_board, sim_ai, sim_opp, move)
                 
                 eval = self.minimax(sim_board, depth - 1, alpha, beta, False, sim_ai, sim_opp)
@@ -76,14 +81,13 @@ class AI:
             return max_eval
         else:
             min_eval = float('inf')
-            # Opponent moves
             moves = self.get_all_moves(board, opp_player, ai_player)
             for move in moves:
                 sim_board = board.clone()
                 sim_ai = self.clone_player(ai_player)
                 sim_opp = self.clone_player(opp_player)
-                # Apply move for opponent
-                self.apply_move(sim_board, opp_player, ai_player, move) # Note: swap roles in apply helper
+                
+                self.apply_move(sim_board, opp_player, ai_player, move)
                 
                 eval = self.minimax(sim_board, depth - 1, alpha, beta, True, sim_ai, sim_opp)
                 min_eval = min(min_eval, eval)
@@ -100,42 +104,32 @@ class AI:
             moves.append(('move', pm))
             
         # 2. Wall Moves
-        # Optimization: Only check walls near players to reduce search space (heuristic pruning)
         if active_player.walls_remaining > 0:
-            # Check a grid around the players
             focus_points = [active_player.pos, waiting_player.pos]
             checked = set()
             
+            # Unpacking tuple (x, y) into fx, fy directly
             for fx, fy in focus_points:
-                # Search range: 2 cells around players
-                for cx in range(fx-2, fx+2):
-                    for cy in range(fy-2, fy+2):
-                        if 0 <= cx < BOARD_SIZE-1 and 0 <= cy < BOARD_SIZE-1:
+                # Search range: 1 cell around players
+                # FIX: Use fx and fy directly (they are integers), do not use fx[0]
+                for cx in range(fx - 1, fx + 2):
+                    for cy in range(fy - 1, fy + 2):
+                        
+                        if 0 <= cx < BOARD_SIZE - 1 and 0 <= cy < BOARD_SIZE - 1:
                             if (cx, cy) in checked: continue
                             checked.add((cx, cy))
                             
-                            # Try Horizontal
-                            if board.place_wall(cx, cy, 'H', active_player, waiting_player):
-                                # Must undo immediately as place_wall modifies board
-                                # Actually place_wall checks validation, so we just want to know if it's legal
-                                # We need to revert the board manually or clone just for checking.
-                                # Since place_wall modifies the board, we can't use it directly in a generator 
-                                # efficiently without reverting.
-                                # STRATEGY: Use clone for check? Too slow.
-                                # STRATEGY: Modify board.place_wall to have a 'check_only' flag or manual revert.
-                                # For this project, let's assume we pass a clone to place_wall or use the clone method inside.
-                                
-                                # To keep it simple: Let's use a temp clone here. 
-                                # It's slow but safe for a student project.
-                                temp_board = board.clone()
-                                if temp_board.place_wall(cx, cy, 'H', active_player, waiting_player):
-                                    moves.append(('wall', (cx, cy), 'H'))
-                                
-                                temp_board = board.clone()
-                                if temp_board.place_wall(cx, cy, 'V', active_player, waiting_player):
-                                    moves.append(('wall', (cx, cy), 'V'))
-                                    
-        # Shuffle to add randomness if scores are equal
+                            # Check Horizontal
+                            # We use a clone to check validity without ruining the main board
+                            test_board_h = board.clone() 
+                            if test_board_h.place_wall(cx, cy, 'H', active_player, waiting_player):
+                                moves.append(('wall', (cx, cy), 'H'))
+                            
+                            # Check Vertical
+                            test_board_v = board.clone()
+                            if test_board_v.place_wall(cx, cy, 'V', active_player, waiting_player):
+                                moves.append(('wall', (cx, cy), 'V'))
+
         random.shuffle(moves)
         return moves
 
@@ -150,7 +144,7 @@ class AI:
             active_player.walls_remaining -= 1
 
     def clone_player(self, player):
-        from player import Player # Local import to avoid circular dependency
+        from player import Player
         p = Player(player.pos, player.color, player.goal_row, player.id)
         p.walls_remaining = player.walls_remaining
         return p
