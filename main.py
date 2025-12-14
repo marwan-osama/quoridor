@@ -1,4 +1,3 @@
-# main.py
 import pygame
 import sys
 from settings import *
@@ -17,14 +16,14 @@ def main():
     # State: 'MENU', 'GAME', 'GAMEOVER'
     state = 'MENU'
     game_mode = None # 'PvP' or 'PvAI'
-    
+
     # Game Objects
     board = None
     p1 = None
     p2 = None
     ai_agent = None
     turn = 1
-    
+
     # Input State
     input_mode = 'MOVE'
     wall_orientation = 'H'
@@ -37,10 +36,10 @@ def main():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            
+
             if state == 'MENU':
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    btn1, btn2 = ui.draw_menu() # Get rects to check click
+                    btn1, btn2 = ui.draw_menu() 
                     mx, my = pygame.mouse.get_pos()
                     if btn1.collidepoint((mx, my)):
                         game_mode = 'PvP'
@@ -63,7 +62,7 @@ def main():
             elif state == 'GAME':
                 current_player = p1 if turn == 1 else p2
                 opponent = p2 if turn == 1 else p1
-                
+
                 # Input Handling for Human
                 if not (game_mode == 'PvAI' and turn == 2):
                     if event.type == pygame.KEYDOWN:
@@ -87,7 +86,7 @@ def main():
                                 else:
                                     turn = 3 - turn # Switch 1 <-> 2
                                     valid_moves = board.get_valid_moves(opponent, current_player) # Prep for next
-                        
+
                         elif input_mode == 'WALL':
                             if current_player.has_walls():
                                 if board.place_wall(gx, gy, wall_orientation, p1, p2):
@@ -98,30 +97,30 @@ def main():
         # Logic Update
         if state == 'GAME':
             current_player = p1 if turn == 1 else p2
-            opponent = p2 if turn == 1 else p1
-            
+
             # AI TURN
             if game_mode == 'PvAI' and turn == 2:
-                # Force draw before AI thinks (so user sees their own move immediately)
+                # Force draw before AI thinks
                 ui.draw_game_screen(board, p1, p2, turn, input_mode, wall_orientation)
                 pygame.display.flip()
-                
+
+                # AI Logic
                 move = ai_agent.get_best_move(board, p1, p2)
                 ai_agent.apply_move(board, p2, p1, move)
-                
+
                 if p2.pos[1] == p2.goal_row:
                     winner = 2
                     state = 'GAMEOVER'
                 else:
                     turn = 1
                     valid_moves = board.get_valid_moves(p1, p2) # Prep for human
-        
+
         # Drawing
         if state == 'MENU':
             ui.draw_menu()
         elif state == 'GAME':
             ui.draw_game_screen(board, p1, p2, turn, input_mode, wall_orientation)
-            
+
             if turn == 1 or game_mode == 'PvP': # Only highlight valid moves for humans
                 if input_mode == 'MOVE':
                     ui.highlight_moves(valid_moves)
@@ -130,14 +129,20 @@ def main():
                     gx = (mx - BOARD_OFFSET_X) // (CELL_SIZE + MARGIN)
                     gy = (my - BOARD_OFFSET_Y) // (CELL_SIZE + MARGIN)
                     ui.draw_ghost_wall(gx, gy, wall_orientation)
-                    
+
         elif state == 'GAMEOVER':
             screen.fill(BACKGROUND)
-            txt = ui.title_font.render(f"PLAYER {winner} WINS!", True, WHITE)
+
+            win_text = f"PLAYER {winner} WINS!"
+            if game_mode == 'PvAI' and winner == 2:
+                win_text = "COMPUTER WINS!"
+
+            txt = ui.title_font.render(win_text, True, WHITE)
             screen.blit(txt, txt.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2)))
+
             sub = ui.font.render("Press SPACE to restart", True, TEXT_COLOR)
             screen.blit(sub, sub.get_rect(center=(SCREEN_WIDTH//2, SCREEN_HEIGHT//2 + 60)))
-            
+
             keys = pygame.key.get_pressed()
             if keys[pygame.K_SPACE]:
                 state = 'MENU'

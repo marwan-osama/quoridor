@@ -1,4 +1,3 @@
-# board.py
 import collections
 import copy
 from settings import *
@@ -10,7 +9,7 @@ class Board:
         else:
             self.graph = {}
             self._init_graph()
-        
+
         self.walls = walls if walls is not None else []
 
     def _init_graph(self):
@@ -34,7 +33,7 @@ class Board:
 
         new_wall = ((c, r), orientation)
         if new_wall in self.walls: return False
-        
+
         # Check overlaps
         if orientation == 'H':
             if ((c, r), 'V') in self.walls: return False
@@ -87,7 +86,7 @@ class Board:
             current, dist = queue.popleft()
             if current[1] == target_row:
                 return dist
-            
+
             for neighbor in self.graph[current]:
                 if neighbor not in visited:
                     visited.add(neighbor)
@@ -105,7 +104,7 @@ class Board:
                 dx = neighbor[0] - current[0]
                 dy = neighbor[1] - current[1]
                 jump_dest = (neighbor[0] + dx, neighbor[1] + dy)
-                
+
                 if jump_dest in self.graph[neighbor]:
                     moves.append(jump_dest)
                 else:

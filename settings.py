@@ -1,8 +1,6 @@
-# settings.py
-
 # Window Settings
 SCREEN_WIDTH = 900 # Made wider for sidebar/instructions
-SCREEN_HEIGHT = 700 
+SCREEN_HEIGHT = 700
 CAPTION = "Quoridor - Graph Implementation"
 
 # Board Settings

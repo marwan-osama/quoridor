@@ -11,10 +11,10 @@ class AI:
 
         # 1. Get all possible moves
         possible_moves = self.get_all_moves(board, ai_player, opp_player)
-        
+
         best_score = -float('inf')
         best_move = None
-        
+
         alpha = -float('inf')
         beta = float('inf')
 
@@ -25,21 +25,21 @@ class AI:
             sim_board = board.clone()
             sim_ai = self.clone_player(ai_player)
             sim_opp = self.clone_player(opp_player)
-            
+
             self.apply_move(sim_board, sim_ai, sim_opp, move)
-            
+
             # Using Depth 2 (Current move + Opponent response)
             # Increase AI_DEPTH in settings.py to 3 if your computer is fast
             score = self.minimax(sim_board, AI_DEPTH - 1, alpha, beta, False, sim_ai, sim_opp)
-            
+
             if score > best_score:
                 best_score = score
                 best_move = move
-            
+
             alpha = max(alpha, score)
             if beta <= alpha:
                 break
-                
+
         return best_move
 
     def evaluate_state(self, board, ai_p, opp_p):
@@ -86,7 +86,7 @@ class AI:
                 sim_ai = self.clone_player(ai_player)
                 sim_opp = self.clone_player(opp_player)
                 self.apply_move(sim_board, sim_ai, sim_opp, move)
-                
+
                 eval = self.minimax(sim_board, depth - 1, alpha, beta, False, sim_ai, sim_opp)
                 max_eval = max(max_eval, eval)
                 alpha = max(alpha, eval)
@@ -100,7 +100,7 @@ class AI:
                 sim_ai = self.clone_player(ai_player)
                 sim_opp = self.clone_player(opp_player)
                 self.apply_move(sim_board, sim_opp, sim_ai, move) # Opponent is moving
-                
+
                 eval = self.minimax(sim_board, depth - 1, alpha, beta, True, sim_ai, sim_opp)
                 min_eval = min(min_eval, eval)
                 beta = min(beta, eval)
@@ -109,31 +109,31 @@ class AI:
 
     def get_all_moves(self, board, active_player, waiting_player):
         moves = []
-        
+
         # 1. Pawn Moves
         pawn_moves = board.get_valid_moves(active_player, waiting_player)
         for pm in pawn_moves:
             moves.append(('move', pm))
-            
+
         # 2. Wall Moves (Only check if player has walls)
         if active_player.walls_remaining > 0:
             # We search a 2-cell radius around both players.
             # This allows the AI to place walls slightly further away to create bottlenecks.
             focus_points = [active_player.pos, waiting_player.pos]
             checked_spots = set()
-            
+
             for fx, fy in focus_points:
                 for cx in range(fx - 2, fx + 2):
                     for cy in range(fy - 2, fy + 2):
                         if 0 <= cx < BOARD_SIZE - 1 and 0 <= cy < BOARD_SIZE - 1:
                             if (cx, cy) in checked_spots: continue
                             checked_spots.add((cx, cy))
-                            
+
                             # Test Horizontal
                             test_h = board.clone()
                             if test_h.place_wall(cx, cy, 'H', active_player, waiting_player):
                                 moves.append(('wall', (cx, cy), 'H'))
-                            
+
                             # Test Vertical
                             test_v = board.clone()
                             if test_v.place_wall(cx, cy, 'V', active_player, waiting_player):

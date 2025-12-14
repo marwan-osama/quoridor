@@ -1,4 +1,3 @@
-# player.py
 from settings import *
 
 class Player:
