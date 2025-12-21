@@ -3,7 +3,9 @@ import copy
 from settings import *
 
 class Board:
-    def __init__(self, graph=None, walls=None):
+    def __init__(self, size=9, graph=None, walls=None):
+        self.size = size
+
         if graph:
             self.graph = graph
         else:
@@ -13,22 +15,22 @@ class Board:
         self.walls = walls if walls is not None else []
 
     def _init_graph(self):
-        for c in range(BOARD_SIZE):
-            for r in range(BOARD_SIZE):
+        for c in range(self.size):
+            for r in range(self.size):
                 neighbors = []
                 if r > 0: neighbors.append((c, r-1))
-                if r < BOARD_SIZE-1: neighbors.append((c, r+1))
+                if r < self.size-1: neighbors.append((c, r+1))
                 if c > 0: neighbors.append((c-1, r))
-                if c < BOARD_SIZE-1: neighbors.append((c+1, r))
+                if c < self.size-1: neighbors.append((c+1, r))
                 self.graph[(c, r)] = neighbors
 
     def clone(self):
         """Creates a deep copy of the board for AI simulation."""
         # We must deepcopy the graph because lists (neighbors) are mutable
-        return Board(copy.deepcopy(self.graph), copy.deepcopy(self.walls))
+        return Board(self.size, copy.deepcopy(self.graph), copy.deepcopy(self.walls))
 
     def place_wall(self, c, r, orientation, p1, p2):
-        if c < 0 or c >= BOARD_SIZE - 1 or r < 0 or r >= BOARD_SIZE - 1:
+        if c < 0 or c >= self.size - 1 or r < 0 or r >= self.size - 1:
             return False
 
         new_wall = ((c, r), orientation)

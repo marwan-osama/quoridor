@@ -125,7 +125,7 @@ class AI:
             for fx, fy in focus_points:
                 for cx in range(fx - 2, fx + 2):
                     for cy in range(fy - 2, fy + 2):
-                        if 0 <= cx < BOARD_SIZE - 1 and 0 <= cy < BOARD_SIZE - 1:
+                        if 0 <= cx < board.size - 1 and 0 <= cy < board.size - 1:
                             if (cx, cy) in checked_spots: continue
                             checked_spots.add((cx, cy))
 
