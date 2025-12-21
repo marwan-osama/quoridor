@@ -1,5 +1,7 @@
 # Quoridor – Graph-Based Game Implementation
 
+This project is a fully playable and **scalable** digital version of Quoridor, supporting both classic and custom board sizes.
+
 ## Game Description
 
 **Quoridor** is a strategic two-player board game where both players stand at their side of the board , and the goal is simple to win:  
@@ -22,8 +24,8 @@ This project is a **fully playable digital version of Quoridor**, implemented in
 
 ## Game Rules
 
-- Board size: **9 × 9**
-- Each player starts with **10 walls**
+- Board size: **9 × 9** (Classical) or Select a Custom size
+- Each player starts with **10 walls** (Classical)
 - Player 1 starts at the **bottom**, goal is the **top row**
 - Player 2 (or AI) starts at the **top**, goal is the **bottom row**
 - Players may:
@@ -32,6 +34,32 @@ This project is a **fully playable digital version of Quoridor**, implemented in
 - A wall placement is **invalid** if it blocks all paths to the goal
 
 ---
+
+## Additional Feature : Custom Board Size Feature
+
+This implementation supports **dynamic board sizes**, allowing players to play Quoridor on boards larger or smaller than the standard (9x9).
+
+### Available Custom Board Sizes 
+- **5 × 5**
+- **7 × 7**
+- **9 × 9** (default / classic)
+- **11 × 11**
+
+### How It Works
+- The board size can be changed **directly from the main menu**
+  
+- The game automatically:
+  - Rebuilds the board graph
+  - Repositions players to the center (start position)
+  - Adjusts goal rows
+  
+- All rules (valid paths, wall legality, AI logic) remains the same for any board size
+
+### Why This Feature Actually Matter 
+- Smaller boards means faster, more tactical games (suitable for beginners to understand how game works AND for professionals to train on limited number of moves)
+- Larger boards means longer, more strategic matches (suitable for long fun games AND for professionals to train on very large amount of moves, thus learning to choose wisely)
+- Demonstrates a **fully scalable graph-based design**
+
 
 ## Screenshots of Game in Action
 
@@ -59,6 +87,13 @@ This project is a **fully playable digital version of Quoridor**, implemented in
 - Install Pygame -> ON bash : pip install pygame
 - Clone Github Repo -> ON bash : git clone https://github.com/marwan-osama/quoridor.git  cd quoridor
 - ON bash to run the project : python main.py
+
+
+## How To Begin A Game
+
+ - To Start a local 2-player game ( Click Human Vs Human Button )
+ - To Play against AI ( Click Human Vs AI Button )
+ - Click on the Board Size Button to specify the Board Size
 
 
 ## Controls 
