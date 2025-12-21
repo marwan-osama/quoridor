@@ -9,7 +9,7 @@ This project is a fully playable and **scalable** digital version of Quoridor, s
 
 Players take turns choosing **one of two actions**:
 1. **Move their piece** to an adjacent valid cell.
-2. **Place a wall** to block the opponent's direct path , slowing the opponent down.
+2. **Place a wall** to block the opponent's direct path , slowing the opponent down (notice that the Walls Number reflects how many walls are remaining for each player).
 
 Walls can block movement paths but **must never completely block all possible paths** to the goal. This rule is strictly enforced using graph traversal algorithms.
 
@@ -66,7 +66,7 @@ This implementation supports **dynamic board sizes**, allowing players to play Q
 ### Main Menu
 <img width="1009" height="746" alt="Screenshot From 2025-12-21 17-08-18" src="https://github.com/user-attachments/assets/4a4c35af-736e-4877-901c-ce7f8d260f4d" />
 
-### Gameplay – Piece Movement OR Wall Addition 9x9 ( Player 2 Turn )
+### Gameplay – Piece Movement OR Wall Addition 9x9 ( Player 2 Turn - 10 Walls Available)
 <img width="908" height="745" alt="Screenshot From 2025-12-14 23-32-35" src="https://github.com/user-attachments/assets/f51f550a-cee6-49fe-a54e-863047bb5315" />
 
 ### Wall Placement
