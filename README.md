@@ -66,7 +66,7 @@ This implementation supports **dynamic board sizes**, allowing players to play Q
 ### Main Menu
 <img width="1009" height="746" alt="Screenshot From 2025-12-21 17-08-18" src="https://github.com/user-attachments/assets/4a4c35af-736e-4877-901c-ce7f8d260f4d" />
 
-### Gameplay – Piece Movement 9x9 ( Player 2 Turn & No More Walls Avaliable )
+### Gameplay – Piece Movement OR Wall Addition 9x9 ( Player 2 Turn )
 <img width="908" height="745" alt="Screenshot From 2025-12-14 23-32-35" src="https://github.com/user-attachments/assets/f51f550a-cee6-49fe-a54e-863047bb5315" />
 
 ### Wall Placement
