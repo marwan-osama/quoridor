@@ -64,13 +64,19 @@ This implementation supports **dynamic board sizes**, allowing players to play Q
 ## Screenshots of Game in Action
 
 ### Main Menu
-<img width="908" height="745" alt="Screenshot From 2025-12-14 23-31-37" src="https://github.com/user-attachments/assets/ca30aca2-b66a-4515-8525-1ae350659685" />
+<img width="1009" height="746" alt="Screenshot From 2025-12-21 17-08-18" src="https://github.com/user-attachments/assets/4a4c35af-736e-4877-901c-ce7f8d260f4d" />
 
-### Gameplay – Piece Movement ( Player 2 Turn & No More Walls Avaliable )
+### Gameplay – Piece Movement 9x9 ( Player 2 Turn & No More Walls Avaliable )
 <img width="908" height="745" alt="Screenshot From 2025-12-14 23-32-35" src="https://github.com/user-attachments/assets/f51f550a-cee6-49fe-a54e-863047bb5315" />
 
 ### Wall Placement
 <img width="908" height="745" alt="Screenshot From 2025-12-14 23-32-57" src="https://github.com/user-attachments/assets/161af780-d487-441b-afe4-c27b59bb040c" />
+
+### Gameplay 5x5 Custom Board 
+<img width="1009" height="746" alt="Screenshot From 2025-12-21 17-18-43" src="https://github.com/user-attachments/assets/a2e60ec0-a427-4ea9-b8d4-c1acff260baa" />
+
+### Gameplay 11x11 Custom Board 
+<img width="1009" height="746" alt="Screenshot From 2025-12-21 17-08-51" src="https://github.com/user-attachments/assets/4abba8c2-830c-4563-bee5-f641c9d5cb62" />
 
 ### Winning Announcement Page 
 <img width="908" height="745" alt="Screenshot From 2025-12-14 23-34-23" src="https://github.com/user-attachments/assets/bf371db9-d403-44ca-8ac3-50db971110cc" />
